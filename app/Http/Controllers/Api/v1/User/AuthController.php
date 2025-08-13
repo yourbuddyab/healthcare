@@ -19,13 +19,12 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('API Token')->accessToken;
+        $user['token'] = $user->createToken('API Token')->accessToken;
 
-        return response()->json([
+        return response([
             'status'  => true,
-            'message' => 'User registered successfully',
-            'token'   => $token,
-            'user'    => $user
+            'message' => 'Login successful',
+            'data'   => $user
         ], 201);
     }
 
