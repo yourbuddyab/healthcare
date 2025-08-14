@@ -15,4 +15,8 @@ class Professional extends Model
         'specialty',
         'status'
     ];
+
+    public function appointments() {
+        return $this->hasMany(Appointment::class);
+    }
 }
