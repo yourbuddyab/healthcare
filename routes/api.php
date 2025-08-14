@@ -11,5 +11,6 @@ Route::prefix('v1')->group(function () {
     Route::get('/professional/index', [ProfessionalController::class, 'index'])->name('professional.index');
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/appointment/index', [AppointmentController::class, 'index'])->name('appointment.index');
+        Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
     });
 });
