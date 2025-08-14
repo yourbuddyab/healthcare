@@ -14,6 +14,8 @@ class Appointment extends Model
         'status',
     ];
 
+    public $timestamps = ['start_time', 'end_time'];
+
     public function professional()
     {
         return $this->belongsTo(Professional::class);

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentService
 {
@@ -31,7 +32,7 @@ class AppointmentService
 
     public function isTimeSlotAvailable($user_id, $start_time, $end_time)
     {
-        return !Appointment::where('user_id', $user_id)
+        return Appointment::where('user_id', $user_id)
             ->where(function ($query) use ($start_time, $end_time) {
                 $query->whereBetween('start_time', [$start_time, $end_time])
                     ->orWhereBetween('end_time', [$start_time, $end_time])
@@ -47,5 +48,10 @@ class AppointmentService
     public function createAppointment($data)
     {
         return Appointment::create($data);
+    }
+
+    public function validatedUserId($appointment)
+    {
+        return $appointment->user_id !== Auth::id();
     }
 }

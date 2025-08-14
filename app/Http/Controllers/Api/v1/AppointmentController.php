@@ -7,6 +7,7 @@ use App\Http\Requests\Appointment\AppointmentFilterRequest;
 use App\Http\Requests\Appointment\AppointmentRequest;
 use App\Models\Appointment;
 use App\Services\AppointmentService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
@@ -56,5 +57,39 @@ class AppointmentController extends Controller
         } catch (\Throwable $th) {
             return response(['status' => false, 'message' => $th->getMessage()], 500);
         }
+    }
+
+    public function cancel(Appointment $appointment, AppointmentService $appointmentService)
+    {
+        if ($appointmentService->validatedUserId($appointment)) {
+            return response([
+                'status' => false,
+                'message' => 'You are not authorized to cancel this appointment.'
+            ], 403);
+        }
+
+        if ($appointment->status === 'completed') {
+            return response([
+                'status' => false,
+                'message' => 'That appointment is already completed. You cannot cancel it.'
+            ], 403);
+        }
+
+        $now = Carbon::now();
+        $startTime = Carbon::parse($appointment->start_time);
+        if ($now->diffInHours($startTime, false) < 24) {
+            return response([
+                'status' => false,
+                'message' => 'Appointments cannot be cancelled within 24 hours of the start time.'
+            ], 422);
+        }
+
+        $appointment->update(['status' => 'cancelled']);
+
+        return response([
+            'status' => true,
+            'message' => 'Appointment cancelled successfully',
+            'data' => $appointment
+        ]);
     }
 }

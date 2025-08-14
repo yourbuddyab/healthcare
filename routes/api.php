@@ -12,5 +12,6 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/appointment/index', [AppointmentController::class, 'index'])->name('appointment.index');
         Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
+        Route::get('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
     });
 });
