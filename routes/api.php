@@ -13,5 +13,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/appointment/index', [AppointmentController::class, 'index'])->name('appointment.index');
         Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
         Route::get('/appointment/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointment.cancel');
+        Route::get('/appointment/{appointment}/complete', [AppointmentController::class, 'complete'])->name('appointment.complete');
     });
 });

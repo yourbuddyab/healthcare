@@ -92,4 +92,29 @@ class AppointmentController extends Controller
             'data' => $appointment
         ]);
     }
+
+    public function complete(Appointment $appointment, AppointmentService $appointmentService)
+    {
+        if ($appointmentService->validatedUserId($appointment)) {
+            return response([
+                'status' => false,
+                'message' => 'You are not authorized to cancel this appointment.'
+            ], 403);
+        }
+
+        $now = Carbon::now();
+        if ($now->lt($appointment->start_time)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Appointments cannot be completed before appointment time.'
+            ], 422);
+        }
+        $appointment->update(['status' => 'completed']);
+
+        return response([
+            'status' => true,
+            'message' => 'Appointment completed successfully',
+            'data' => $appointment
+        ]);
+    }
 }
