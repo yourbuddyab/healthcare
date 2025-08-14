@@ -95,7 +95,7 @@ class AppointmentTest extends TestCase
         ]);
     }
 
-    public function  test_time_slot_can_be_booked_for_different_professional(): void
+    public function  test_appointment_created_successfully(): void
     {
         $payload = [
             'professional_id' => $this->professional->id,
@@ -104,13 +104,16 @@ class AppointmentTest extends TestCase
         ];
 
         $response = $this->postJson(route('appointment.store'), $payload);
-        $response->assertStatus(409)->assertJsonStructure([
-            'status',
-            'message',
-        ]);
+        
+        $response->assertStatus(201)
+            ->assertJsonStructure(['status', 'message'])
+            ->assertJson([
+                'status' => true,
+                'message' => 'Appointment successfully created.',
+            ]);
     }
 
-    public function test_appointment_created_successfully(): void
+    public function test_time_slot_can_be_booked_for_different_professional(): void
     {
         $appointmentPayload = [
             'professional_id' => $this->professional->id,
@@ -127,12 +130,12 @@ class AppointmentTest extends TestCase
         ];
 
         $response = $this->postJson(route('appointment.store'), $payload);
-
-        $response->assertStatus(201)
+        Log::debug($response->json());
+        $response->assertStatus(409)
             ->assertJsonStructure(['status', 'message'])
             ->assertJson([
-                'status' => true,
-                'message' => 'Appointment successfully created.',
+                'status' => false,
+                'message' => 'You already have an appointment with this time.',
             ]);
     }
 
